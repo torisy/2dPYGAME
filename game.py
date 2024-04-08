@@ -1,15 +1,26 @@
 import pygame
 
-# Установка размеров окна игрового поля
-field_width = 600
-field_height = 400
+# Установка размеров окна игрового поля для Full HD
+field_width = 1920
+field_height = 1080
 
-# Функция для отрисовки игрового поля
+# Цвета
+WHITE = (255, 255, 255)
+GREEN = (0, 255, 0)
+
+# Статичные зеленые квадраты
+static_rects = [
+    pygame.Rect(100, 100, 50, 50),
+    pygame.Rect(200, 200, 50, 50),
+    pygame.Rect(300, 300, 50, 50)
+]
+
+# Функция для отрисовки игрового поля и статичных квадратов с коллизиями
 def draw_game_field(screen):
-    screen.fill((150, 150, 150))  # Заливка экрана серым цветом
+    screen.fill(WHITE)  # Заливка экрана белым цветом
 
     # Рисуем игровое поле
-    pygame.draw.rect(screen, (0, 255, 0), (100, 100, field_width, field_height), 2)
+    pygame.draw.rect(screen, (150, 150, 150), (0, 0, field_width, field_height))
 
     # Обновление экрана
     pygame.display.flip()

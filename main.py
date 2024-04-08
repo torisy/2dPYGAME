@@ -1,7 +1,10 @@
 import pygame
 from game import draw_game_field
+from character import Character
 
 pygame.init()
+
+clock = pygame.time.Clock()#для настройки кадров в секунду
 
 # Установка размеров окна
 screen_width = 800
@@ -26,6 +29,9 @@ def draw_text(text, font, color, surface, x, y):
 # Флаг для отображения игрового поля
 show_game_field = False
 
+# Создание персонажа
+player = Character(100, 100)
+
 # Основной игровой цикл
 running = True
 while running:
@@ -34,12 +40,9 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_pos = pygame.mouse.get_pos()
-            if new_game_button.collidepoint(mouse_pos):
-                show_game_field = True
-            if exit_button.collidepoint(mouse_pos):
-                running = False
+
+    keys = pygame.key.get_pressed()
+    player.move(keys)
 
     # Рисуем кнопки
     new_game_button = pygame.Rect(300, 200, 200, 50)
@@ -51,11 +54,23 @@ while running:
     pygame.draw.rect(screen, BLACK, exit_button)
     draw_text("Выход", font, WHITE, screen, 400, 325)
 
+    # Обработка нажатий кнопок мыши
+    mouse_pos = pygame.mouse.get_pos()
+    if new_game_button.collidepoint(mouse_pos):
+        if pygame.mouse.get_pressed()[0]:  # Левая кнопка мыши
+            show_game_field = True
+
+    if exit_button.collidepoint(mouse_pos):
+        if pygame.mouse.get_pressed()[0]:  # Левая кнопка мыши
+            running = False
+
     # Отображение игрового поля при нажатии на кнопку "Новая игра"
     if show_game_field:
         draw_game_field(screen)
+        player.draw(screen)
 
     # Обновление экрана
     pygame.display.flip()
+    clock.tick(60)#фреймрейт 60
 
 pygame.quit()
