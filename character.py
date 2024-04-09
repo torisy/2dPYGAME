@@ -1,6 +1,7 @@
 import pygame
 
 class Character:
+
     def __init__(self, x, y):
         self.x = 10
         self.y = 10

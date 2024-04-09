@@ -1,10 +1,12 @@
 import pygame
+import math
 from game import draw_game_field
 from character import Character
 
 pygame.init()
 
-clock = pygame.time.Clock()#для настройки кадров в секунду
+#для настройки кадров в секунду
+clock = pygame.time.Clock()
 
 # Установка размеров окна
 screen_width = 800
@@ -28,11 +30,15 @@ def draw_text(text, font, color, surface, x, y):
 
 # Флаг для отображения игрового поля
 show_game_field = False
-
 # Создание персонажа
-player = Character(100, 100)
-
+player = Character(500, 500)
+# Создание пули как отдельного объекта
+bullets = []
+bullet_speed = 7
+bullet_delay = 24
+bullet_delay_counter = 0
 # Основной игровой цикл
+
 running = True
 while running:
     screen.fill(WHITE)
@@ -69,8 +75,32 @@ while running:
         draw_game_field(screen)
         player.draw(screen)
 
+    # Стрельба с задержкой
+    if bullet_delay_counter > 0:
+        bullet_delay_counter -= 1
+
+    # Стрельба по указанию мыши
+    if pygame.mouse.get_pressed()[0] and bullet_delay_counter <= 0:  # Левая кнопка мыши
+        mouse_pos = pygame.mouse.get_pos()
+        angle = math.atan2(mouse_pos[1] - player.x, mouse_pos[0] - player.y)
+        bullets.append([player.x + 5, player.y, angle])
+        bullet_delay_counter = bullet_delay
+
+    for bullet in bullets:
+        pygame.draw.rect(screen, BLACK, (bullet[0], bullet[1], 3, 3))
+        if len(bullet) == 3:  # Если есть угол, двигаем пулю в этом направлении
+            bullet[0] += bullet_speed * math.cos(bullet[2])
+            bullet[1] += bullet_speed * math.sin(bullet[2])
+        else:
+            bullet[1] -= bullet_speed  # Иначе двигаем пулю вверх
+
+        # Удаление пуль, вышедших за пределы экрана
+    bullets = [bullet for bullet in bullets if bullet[1] > 0]
+
     # Обновление экрана
     pygame.display.flip()
-    clock.tick(60)#фреймрейт 60
+    # фреймрейт 60
+    clock.tick(60)
+
 
 pygame.quit()
