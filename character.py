@@ -9,6 +9,7 @@ class Character:
         self.visible = True
 
     def move(self, keys):
+        self.prev_x, self.prev_y = self.x, self.y
         if keys[pygame.K_w]:
             self.y -= self.speed
         if keys[pygame.K_s]:

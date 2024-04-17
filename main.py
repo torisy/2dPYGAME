@@ -3,6 +3,7 @@ import math
 from game import draw_game_field
 from character import Character
 from shooting import shoot
+from random_trees import RandomTrees
 
 pygame.init()
 
@@ -14,6 +15,9 @@ screen_width = 800
 screen_height = 600
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Моя игра на Pygame")
+
+# Создание объекта класса RandomTrees
+random_trees = RandomTrees(screen_width, screen_height, 20, 10)
 
 # Цвета
 WHITE = (255, 255, 255)
@@ -32,7 +36,7 @@ def draw_text(text, font, color, surface, x, y):
 # Флаг для отображения игрового поля
 show_game_field = False
 # Создание персонажа
-player = Character(500, 500)
+player = Character(0, 0)
 # Создание пули как отдельного объекта
 bullets = []
 bullet_speed = 7
@@ -82,10 +86,21 @@ while running:
         # Удаление пуль, вышедших за пределы экрана
     bullets = [bullet for bullet in bullets if bullet[1] > 0]
 
+    # Отрисовка рандомных деревьев
+    random_trees.draw(screen)
+
+    # Проверка коллизий с деревьями
+    for tree in random_trees.trees:
+        tree_rect = pygame.Rect(tree[0], tree[1], random_trees.tree_size, random_trees.tree_size)
+        player_rect = pygame.Rect(player.x, player.y, 10, 10)
+        if tree_rect.colliderect(player_rect):
+            # Обработка столкновения
+            player.x, player.y = player.prev_x, player.prev_y
+
     # Обновление экрана
     pygame.display.flip()
-    # фреймрейт 60
-    clock.tick(60)
+    # фреймрейт 100
+    clock.tick(100)
 
 
 pygame.quit()
